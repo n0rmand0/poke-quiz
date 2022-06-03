@@ -1,0 +1,21 @@
+.question{
+    float: left;
+    img{
+        filter: brightness(1);
+        // animation-name: fade-in;
+        // animation-duration: 1s;
+        // animation-delay: 1s;
+        // animation-fill-mode: both;
+        transition: all .3s;
+    }
+
+    img.is-hidden{
+        filter: brightness(0);
+
+    }
+}
+
+@keyframes fade-in {
+    0% {filter: brightness(0);}
+    100% {filter: brightness(1);}
+}
