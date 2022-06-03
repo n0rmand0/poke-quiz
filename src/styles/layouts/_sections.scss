@@ -1,0 +1,18 @@
+// SITE SECTIONS LAYOUT STYLES
+////////////////////////////////////////////////////////////////
+%section {
+  position: relative;
+  padding: $large-spacing 0;
+  z-index: 99;
+}
+
+.l-section {
+  @extend %section;
+  background:  $base-background-color;
+}
+
+.l-section--secondary {
+  @extend %section;
+  @extend %inverse;
+  background: $secondary-background-color;
+}
