@@ -5,7 +5,7 @@ import Question from "./Question";
 import { pokedex } from "./pokedex";
 import { useEffect, useState } from "react";
 let startSlide: any, pauseSlide: any, nextSlide: any;
-let startTime, stopTime;
+let startTime: any, stopTime: any;
 
 export default function App() {
   const [mode, setMode] = useState(0); // 0 = start menu // 1 = play // 2 = end game menu
@@ -28,7 +28,7 @@ export default function App() {
       startTime = new Date();
       startSlide = setTimeout(() => {
         setSilhouette(true);
-        nextQuestion();
+        nextQuestion(false);
       }, 5000);
     }
   }, [mode, progress]);
@@ -118,7 +118,7 @@ export default function App() {
     }
   }
 
-  function nextQuestion(correct) {
+  function nextQuestion(correct: boolean) {
     stopTime = new Date();
     // clear all timeouts
     clearTimeout(startSlide);
@@ -165,7 +165,7 @@ export default function App() {
             <div className={time ? "timer__progress" : ""}></div>
           </div>
           <Question
-            onSelect={(e) => handleSelect(e)}
+            onSelect={(e: any) => handleSelect(e)}
             data={quiz[progress]}
             silhouette={silhouette}
           />
