@@ -2,23 +2,22 @@
 ////////////////////////////////////////////////////////////////
 
 %button-base {
-  transition: background, .2s;
+  transition: background, 0.2s;
   display: inline-block;
-  padding: .5em 1em;
-  color: #fff !important;
-  background-color: $base-color;
-  border: 1px solid  $base-color;
+  padding: 0.5em 1em;
+  color: $blue !important;
+  background-color: #fff;
+  border: 6px solid $yellow;
   border-radius: $base-border-radius;
-  font-size: 1.2em;
-  font-weight: 400;
-  text-transform: uppercase;
+  font-size: 1.5em;
+  font-weight: 800;
+  // text-transform: uppercase;
   line-height: 1;
   text-align: center;
   vertical-align: middle;
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
-
 
   &:focus {
     outline: thin dotted #333;
@@ -30,8 +29,7 @@
   &:active,
   &.active {
     color: #fff;
-    background-color: darken($base-color, 5);
-    border-color: $base-color;
+    opacity: 0.8;
     outline: 0;
     text-decoration: none;
   }
@@ -47,37 +45,40 @@ button,
 }
 
 // Secondary Button
-.button--secondary {
+.button--reveal {
   @extend %button-base;
-  color: #fff!important;
-  background-color: $base-color;
-  border-color: $base-color;
+  color: $blue !important;
+  background-color: $light-green;
+  border-color: $green;
 
   &:hover,
   &:active,
-  &.active{
-    background-color: lighten($base-color, 10);
-    border-color: $base-color;
+  &.active {
+    background-color: $light-green;
+    border-color: $green;
+    opacity: 1;
   }
 }
-
 
 // Button Sizes
 ////////////////////////////////////////////////////////////////
 
 .button--large {
   @extend %button-base;
-  font-size: 1.5em !important;
+  font-size: 2.5em !important;
+  @media (max-width: 600px) {
+    font-size: 2em !important;
+  }
 }
 
 .button--small {
   @extend %button-base;
-  font-size: .75em !important;
+  font-size: 0.75em !important;
 }
 
 .button--tiny {
   @extend %button-base;
-  font-size: .5em !important;
+  font-size: 0.5em !important;
 }
 
 .button--block {
@@ -91,11 +92,11 @@ button,
 // Special Links
 ////////////////////////////////////////////////////////////////
 
-.button--link:after{
+.button--link:before {
   position: relative;
-  top: -.05em;
-  left: .25em;
-  content: "›";
+  top: -0.05em;
+  right: 0.25em;
+  content: "‹";
   font-size: 1em;
   line-height: 0;
 }

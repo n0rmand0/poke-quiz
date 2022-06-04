@@ -1,13 +1,13 @@
 /** @jsxImportSource @emotion/react */
+import logo from "./logo.png";
 import "./styles/global.scss";
-import "./styles/modules/app.scss";
 import Question from "./Question";
 import { pokedex } from "./pokedex";
 import { useEffect, useState } from "react";
 let startSlide: any, pauseSlide: any, nextSlide: any;
 let startTime: any, stopTime: any;
 let quizLength = 15;
-let questionTimeout = 5000;
+let questionTimeout = 6000;
 
 export default function App() {
   const [mode, setMode] = useState(0); // 0 = start menu // 1 = play // 2 = end game menu
@@ -17,6 +17,7 @@ export default function App() {
   const [silhouette, setSilhouette] = useState(true);
   const [time, setTime] = useState(true);
   const [score, setScore] = useState(0);
+  const [alert, setAlert] = useState("");
 
   // on load
   useEffect(() => {
@@ -26,10 +27,12 @@ export default function App() {
   // on progress change
   useEffect(() => {
     if (mode === 1) {
+      setAlert("");
       setTime(true);
       setSilhouette(true);
       startTime = new Date();
       startSlide = setTimeout(() => {
+        setAlert("Out of Time!");
         nextQuestion();
       }, questionTimeout);
     }
@@ -81,6 +84,10 @@ export default function App() {
           if (options.length > 3) {
             // add correct answer and shuffle
             options.push(k);
+            // this will enable only 1 answer for question 1
+            if (i === 0) {
+              options = [k];
+            }
             shuffleArray(options);
             // add question data to question array
             questions.push({
@@ -119,10 +126,12 @@ export default function App() {
       );
       let updatedScore = score + roundPoints;
       setScore(updatedScore);
+      setAlert("Correct!");
       console.log("Correct!");
       console.log("round:", roundPoints, "total:", updatedScore);
       nextQuestion();
     } else {
+      setAlert("Wrong");
       console.log("Incorrect!");
       console.log("round:", 0, "total:", score);
       nextQuestion();
@@ -137,17 +146,19 @@ export default function App() {
     // turn off timer and show image
     setSilhouette(false);
     setTime(false);
+
     // pause so user can see image, fade out, then show next
     if (progress < quizLength - 1) {
       pauseSlide = setTimeout(() => {
         setVisible(false);
         setSilhouette(true);
-      }, 2000);
+        setAlert("");
+      }, 2500);
       nextSlide = setTimeout(() => {
         setVisible(true);
         setProgress(progress + 1);
         startTime = new Date();
-      }, 2200);
+      }, 2700);
     } else {
       // end game
       setTimeout(() => {
@@ -159,14 +170,45 @@ export default function App() {
   }
 
   return (
-    <div>
-      <h1>Who's that Pokemon</h1>
+    <div className="app">
+      <h1 className={mode === 1 ? "header header--small" : "header"}>
+        Who's that <img src={logo} alt="Pokémon" />
+        <span>?</span>
+      </h1>
 
+      {mode === 0 && (
+        <div>
+          <a
+            className="button button--large"
+            onClick={() => {
+              setMode(1);
+            }}
+          >
+            Start
+          </a>
+          <div className="instructions">
+            <h3>Instructions:</h3>
+            <h4>
+              Guess the hidden Pokémon as quickly as you can.
+              <br /> You only have 6 seconds for each round.
+              <br /> The quicker you answer, the more points you will earn!
+            </h4>
+          </div>
+        </div>
+      )}
       {mode === 1 && visible && quiz[0] && (
         <>
-          <h2>
+          <a
+            className="back-button button--link"
+            href=""
+            onClick={() => setMode(0)}
+          >
+            Back
+          </a>
+          <h2 className="progress">
             {progress + 1}/{quizLength}
           </h2>
+          {alert && <div className="alert">{alert}</div>}
           <div className="timer">
             <div className={time ? "timer__progress" : ""}></div>
           </div>
@@ -177,22 +219,15 @@ export default function App() {
           />
         </>
       )}
-      {mode === 0 && (
-        <div>
-          <a
-            className="button"
-            onClick={() => {
-              setMode(1);
-            }}
-          >
-            Play
-          </a>
-        </div>
-      )}
       {mode === 2 && (
         <div>
+          <h1 className="score">
+            You scored <span>{score}</span>
+          </h1>
+          <br />
+
           <a
-            className="button"
+            className="button button--large"
             onClick={() => {
               setScore(0);
               setMode(0);
@@ -200,7 +235,6 @@ export default function App() {
           >
             Play Again
           </a>
-          <h1>{score}</h1>
         </div>
       )}
     </div>
