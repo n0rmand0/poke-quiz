@@ -19,7 +19,8 @@
 .header {
   position: relative;
   text-align: center;
-  margin-bottom: var(--small-spacing);
+  margin: 0 auto var(--small-spacing) auto;
+  width: 66%;
   z-index: 9;
   @media (max-width: 670px) {
     font-size: 2em;
@@ -32,10 +33,11 @@
     margin-bottom: -0.8em;
     @media (max-width: 670px) {
       width: 10em;
+      margin-bottom: -0.4em;
     }
   }
   span {
-    font-size: 2em;
+    font-size: 1.8em;
   }
 }
 
@@ -50,6 +52,9 @@
     top: -0.4em;
     display: inline;
     width: 5em;
+    @media (max-width: 670px) {
+      margin-bottom: -0.8em;
+    }
   }
   span {
     font-size: 1em;

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 let startSlide: any, pauseSlide: any, nextSlide: any;
 let startTime: any, stopTime: any;
 let quizLength = 15;
-let questionTimeout = 60000;
+let questionTimeout = 6000;
 
 export default function App() {
   const [mode, setMode] = useState(0); // 0 = start menu // 1 = play // 2 = end game menu
@@ -152,11 +152,11 @@ export default function App() {
       pauseSlide = setTimeout(() => {
         setVisible(false);
         setSilhouette(true);
+        setProgress(progress + 1);
         setAlert("");
       }, 2500);
       nextSlide = setTimeout(() => {
         setVisible(true);
-        setProgress(progress + 1);
         startTime = new Date();
       }, 2700);
     } else {
