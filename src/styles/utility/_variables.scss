@@ -1,37 +1,33 @@
 // GLOBAL VARIABLES
 ////////////////////////////////////////////////////////////////
+:root {
+  // Typography
+  --base-font-family: "Carter One", cursive;
+  --secondary-font-family: var(--base-font-family);
 
-// Typography
-$base-font-family: "Carter One", cursive;
-$secondary-font-family: $base-font-family;
+  // Sizes
+  --max-width: 1300px;
+  --base-spacing: 2rem;
+  --small-spacing: 1rem;
+  --large-spacing: 4rem;
 
-// Sizes
-$max-width: 1300px;
-$base-spacing: 2rem;
-$extra-small-spacing: $base-spacing / 4;
-$small-spacing: $base-spacing / 2;
-$large-spacing: $base-spacing * 2;
+  // Colors
+  --dark-gray: #333;
+  --medium-gray: #999;
+  --light-gray: #ccc;
+  --red: #c1001f;
+  --blue: #03507e;
+  --yellow: #edcd00;
+  --green: #589a52;
+  --light-green: #d8e6d6;
 
-// Colors
-$dark-gray: #333;
-$medium-gray: #999;
-$light-gray: #ccc;
-$red: #c1001f;
-$blue: #03507e;
-$yellow: #edcd00;
-$green: #589a52;
-$light-green: #d8e6d6;
+  // Font Colors
+  --base-color: var(--red);
+  --base-font-color: #fff;
+  --secondary-font-color: var(--dark-gray);
 
-// Font Colors
-$base-color: $red;
-$base-font-color: #fff;
-$secondary-font-color: $dark-gray;
-
-// Background Colors
-$base-background-color: #fff;
-$secondary-background-color: $dark-gray;
-
-// Borders
-$base-border-color: $light-gray;
-$base-border-radius: 1rem;
-$base-border: 1px solid $base-border-color;
+  // Borders
+  --base-border-color: var(--yellow);
+  --base-border-radius: 1rem;
+  --base-border: 5px solid var(--base-border-color);
+}

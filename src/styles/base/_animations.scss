@@ -1,2 +1,37 @@
 // GLOBAL ANIMATION KEYFRAMES
 ////////////////////////////////////////////////////////////////
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes floating {
+  0% {
+    transform: translate(0, 0px);
+  }
+  50% {
+    transform: translate(0, -15px);
+  }
+  100% {
+    transform: translate(0, -0px);
+  }
+}
+
+@keyframes shrink {
+  0% {
+    background: var(--green);
+    width: 100%;
+  }
+  100% {
+    background: var(--yellow);
+    width: 0;
+  }
+}

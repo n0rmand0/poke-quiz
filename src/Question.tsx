@@ -17,7 +17,7 @@ export default function Question(props: any) {
       </div>
 
       <ul className="question__buttons">
-        {props.data.options.map((o, key) => (
+        {props.data.options.map((o: any, key: number) => (
           <li>
             <a
               className={

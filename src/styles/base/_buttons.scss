@@ -5,13 +5,12 @@
   transition: background, 0.2s;
   display: inline-block;
   padding: 0.5em 1em;
-  color: $blue !important;
+  color: var(--blue) !important;
   background-color: #fff;
-  border: 6px solid $yellow;
-  border-radius: $base-border-radius;
+  border: var(--base-border);
+  border-radius: var(--base-border-radius);
   font-size: 1.5em;
-  font-weight: 800;
-  // text-transform: uppercase;
+  font-weight: 8006px solid var(--yellow);
   line-height: 1;
   text-align: center;
   vertical-align: middle;
@@ -47,15 +46,15 @@ button,
 // Secondary Button
 .button--reveal {
   @extend %button-base;
-  color: $blue !important;
-  background-color: $light-green;
-  border-color: $green;
+  color: var(--blue) !important;
+  background-color: var(--light-green);
+  border-color: var(--green);
 
   &:hover,
   &:active,
   &.active {
-    background-color: $light-green;
-    border-color: $green;
+    background-color: var(--light-green);
+    border-color: var(--green);
     opacity: 1;
   }
 }

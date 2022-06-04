@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 let startSlide: any, pauseSlide: any, nextSlide: any;
 let startTime: any, stopTime: any;
 let quizLength = 15;
-let questionTimeout = 6000;
+let questionTimeout = 60000;
 
 export default function App() {
   const [mode, setMode] = useState(0); // 0 = start menu // 1 = play // 2 = end game menu
@@ -192,6 +192,7 @@ export default function App() {
               Guess the hidden Pokémon as quickly as you can.
               <br /> You only have 6 seconds for each round.
               <br /> The quicker you answer, the more points you will earn!
+              <br /> Every round is random, so keep trying!
             </h4>
           </div>
         </div>
