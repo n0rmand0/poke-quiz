@@ -14,6 +14,7 @@ export default function Question(props: any) {
       <ul>
         {props.data.options.map((o, key) => (
           <li
+            className="button"
             key={key}
             onClick={() => {
               props.onSelect(o.name);

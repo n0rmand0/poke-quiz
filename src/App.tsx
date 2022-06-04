@@ -6,6 +6,8 @@ import { pokedex } from "./pokedex";
 import { useEffect, useState } from "react";
 let startSlide: any, pauseSlide: any, nextSlide: any;
 let startTime: any, stopTime: any;
+let quizLength = 15;
+let questionTimeout = 5000;
 
 export default function App() {
   const [mode, setMode] = useState(0); // 0 = start menu // 1 = play // 2 = end game menu
@@ -25,11 +27,11 @@ export default function App() {
   useEffect(() => {
     if (mode === 1) {
       setTime(true);
+      setSilhouette(true);
       startTime = new Date();
       startSlide = setTimeout(() => {
-        setSilhouette(true);
-        nextQuestion(false);
-      }, 5000);
+        nextQuestion();
+      }, questionTimeout);
     }
   }, [mode, progress]);
 
@@ -39,7 +41,7 @@ export default function App() {
     let questions: any[] = [];
     getRandomUniqueAnswers();
 
-    // get 10 random pokemon from pokedex. Add them to answer key.
+    // get random pokemon from pokedex. Add them to answer key.
     function getRandomUniqueAnswers() {
       let key = Math.floor(Math.random() * (pokedex.length - 1));
       // ensure key is unique (no repeats)
@@ -51,8 +53,8 @@ export default function App() {
         getRandomUniqueAnswers();
         return;
       }
-      // repeat until 10 unique answers
-      if (answerKey.length > 9) {
+      // repeat until quizLength unique answers
+      if (answerKey.length > quizLength - 1) {
         // done, go to next step
         getOptions();
       } else {
@@ -110,16 +112,24 @@ export default function App() {
   function handleSelect(selection: string) {
     // console.log(selection);
     if (selection === quiz[progress].answer.name) {
+      stopTime = new Date();
+      // calculate score - add bonus for quick time
+      let roundPoints = Math.floor(
+        5000 + 5000 * (1 - (stopTime - startTime) / questionTimeout)
+      );
+      let updatedScore = score + roundPoints;
+      setScore(updatedScore);
       console.log("Correct!");
-      nextQuestion(true);
+      console.log("round:", roundPoints, "total:", updatedScore);
+      nextQuestion();
     } else {
       console.log("Incorrect!");
-      nextQuestion(false);
+      console.log("round:", 0, "total:", score);
+      nextQuestion();
     }
   }
 
-  function nextQuestion(correct: boolean) {
-    stopTime = new Date();
+  function nextQuestion() {
     // clear all timeouts
     clearTimeout(startSlide);
     clearTimeout(pauseSlide);
@@ -127,14 +137,8 @@ export default function App() {
     // turn off timer and show image
     setSilhouette(false);
     setTime(false);
-    // calculate score - subtract milliseconds spent on question
-    let roundPoints = 10000 - (stopTime - startTime);
-    if (correct) {
-      setScore(score + roundPoints);
-    }
     // pause so user can see image, fade out, then show next
-    console.log(progress, score);
-    if (progress < 9) {
+    if (progress < quizLength - 1) {
       pauseSlide = setTimeout(() => {
         setVisible(false);
         setSilhouette(true);
@@ -160,7 +164,9 @@ export default function App() {
 
       {mode === 1 && visible && quiz[0] && (
         <>
-          <h2>{progress + 1}/10</h2>
+          <h2>
+            {progress + 1}/{quizLength}
+          </h2>
           <div className="timer">
             <div className={time ? "timer__progress" : ""}></div>
           </div>
@@ -174,6 +180,7 @@ export default function App() {
       {mode === 0 && (
         <div>
           <a
+            className="button"
             onClick={() => {
               setMode(1);
             }}
@@ -185,9 +192,10 @@ export default function App() {
       {mode === 2 && (
         <div>
           <a
+            className="button"
             onClick={() => {
               setScore(0);
-              setMode(1);
+              setMode(0);
             }}
           >
             Play Again
