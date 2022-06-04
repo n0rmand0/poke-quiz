@@ -4,17 +4,34 @@ import "./styles/modules/app.scss";
 import Question from "./Question";
 import { pokedex } from "./pokedex";
 import { useEffect, useState } from "react";
+let startSlide: any, pauseSlide: any, nextSlide: any;
+let startTime, stopTime;
 
 export default function App() {
+  const [mode, setMode] = useState(0); // 0 = start menu // 1 = play // 2 = end game menu
   const [quiz, setQuiz] = useState<any[]>([]);
   const [progress, setProgress] = useState(0);
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [silhouette, setSilhouette] = useState(true);
   const [time, setTime] = useState(true);
+  const [score, setScore] = useState(0);
 
   // on load
   useEffect(() => {
     buildQuiz();
   }, []);
+
+  // on progress change
+  useEffect(() => {
+    if (mode === 1) {
+      setTime(true);
+      startTime = new Date();
+      startSlide = setTimeout(() => {
+        setSilhouette(true);
+        nextQuestion();
+      }, 5000);
+    }
+  }, [mode, progress]);
 
   //// building the quiz.  Each quiz is randomized from 800+ pokemon.
   function buildQuiz() {
@@ -94,32 +111,89 @@ export default function App() {
     // console.log(selection);
     if (selection === quiz[progress].answer.name) {
       console.log("Correct!");
+      nextQuestion(true);
     } else {
       console.log("Incorrect!");
+      nextQuestion(false);
     }
+  }
 
+  function nextQuestion(correct) {
+    stopTime = new Date();
+    // clear all timeouts
+    clearTimeout(startSlide);
+    clearTimeout(pauseSlide);
+    clearTimeout(nextSlide);
+    // turn off timer and show image
+    setSilhouette(false);
     setTime(false);
-    // wait 2 seconds
-    setTimeout(() => {
-      setVisible(true);
-      setProgress(progress + 1);
-    }, 2000);
-    // then show next
-    setTimeout(() => {
-      setVisible(false);
-      setTime(true);
-    }, 2500);
+    // calculate score - subtract milliseconds spent on question
+    let roundPoints = 10000 - (stopTime - startTime);
+    if (correct) {
+      setScore(score + roundPoints);
+    }
+    // pause so user can see image, fade out, then show next
+    console.log(progress, score);
+    if (progress < 9) {
+      pauseSlide = setTimeout(() => {
+        setVisible(false);
+        setSilhouette(true);
+      }, 2000);
+      nextSlide = setTimeout(() => {
+        setVisible(true);
+        setProgress(progress + 1);
+        startTime = new Date();
+      }, 2200);
+    } else {
+      // end game
+      setTimeout(() => {
+        setMode(2);
+        buildQuiz();
+        setProgress(0);
+      }, 2000);
+    }
   }
 
   return (
     <div>
       <h1>Who's that Pokemon</h1>
-      <h2>{progress + 1}/10</h2>
-      <div className="timer">
-        <div className={time ? "timer__progress" : ""}></div>
-      </div>
-      {!visible && quiz[0] && (
-        <Question onSelect={(e) => handleSelect(e)} data={quiz[progress]} />
+
+      {mode === 1 && visible && quiz[0] && (
+        <>
+          <h2>{progress + 1}/10</h2>
+          <div className="timer">
+            <div className={time ? "timer__progress" : ""}></div>
+          </div>
+          <Question
+            onSelect={(e) => handleSelect(e)}
+            data={quiz[progress]}
+            silhouette={silhouette}
+          />
+        </>
+      )}
+      {mode === 0 && (
+        <div>
+          <a
+            onClick={() => {
+              setMode(1);
+            }}
+          >
+            Play
+          </a>
+        </div>
+      )}
+      {mode === 2 && (
+        <div>
+          <a
+            onClick={() => {
+              setScore(0);
+              setMode(1);
+            }}
+          >
+            Play Again
+          </a>
+          <h1>{score}</h1>
+        </div>
       )}
     </div>
   );

@@ -2,16 +2,12 @@ import { useEffect, useState } from "react";
 import "./styles/modules/question.scss";
 
 export default function Question(props: any) {
-  const [hidden, setHidden] = useState(true);
-
-  useEffect(() => {
-    setHidden(true);
-  }, [props.data]);
+  //   useEffect(() => {}, [props.data]);
 
   return (
     <div className="question">
       <img
-        className={hidden ? "is-hidden" : ""}
+        className={props.silhouette ? "is-hidden" : ""}
         src={props.data.answer.image}
         alt=""
       />
@@ -20,7 +16,6 @@ export default function Question(props: any) {
           <li
             key={key}
             onClick={() => {
-              setHidden(false);
               props.onSelect(o.name);
             }}
           >
