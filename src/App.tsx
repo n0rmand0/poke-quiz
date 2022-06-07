@@ -4,20 +4,25 @@ import "./styles/global.scss";
 import Question from "./Question";
 import { pokedex } from "./pokedex";
 import { useEffect, useState } from "react";
-let startSlide: any, pauseSlide: any, nextSlide: any;
-let startTime: any, stopTime: any;
+let startSlide: any, // timeout for starting gameplay
+  pauseSlide: any, // timeout for pausing gameplay
+  nextSlide: any, // timeout for go to next slide
+  startTime: any, // Date of start
+  stopTime: any; // Date of finish
 let quizLength = 15;
 let questionTimeout = 6000;
 
 export default function App() {
-  const [mode, setMode] = useState(0); // 0 = start menu // 1 = play // 2 = end game menu
-  const [quiz, setQuiz] = useState<any[]>([]);
-  const [progress, setProgress] = useState(0);
-  const [visible, setVisible] = useState(true);
-  const [silhouette, setSilhouette] = useState(true);
-  const [time, setTime] = useState(true);
-  const [score, setScore] = useState(0);
-  const [alert, setAlert] = useState("");
+  const [mode, setMode] = useState(0); // 0=start menu // 1=play // 2=end game menu
+  const [quiz, setQuiz] = useState<any[]>([]); // contains all the questions to build the quiz
+  const [progress, setProgress] = useState(0); // tracks current question/slide
+  const [visible, setVisible] = useState(true); // is question visible
+  const [silhouette, setSilhouette] = useState(true); // is pokemon blacked out
+  const [time, setTime] = useState(true); // is timer ui visible
+  const [score, setScore] = useState(0); // trakcs score
+  const [correct, setCorrect] = useState(0); // tracks numer of correct answers
+  const [alert, setAlert] = useState(""); // sets alert message
+  const [lock, setLock] = useState(false); // locks slide so multiple selections cannot be made
 
   // on load
   useEffect(() => {
@@ -30,6 +35,7 @@ export default function App() {
       setAlert("");
       setTime(true);
       setSilhouette(true);
+      setLock(false);
       startTime = new Date();
       startSlide = setTimeout(() => {
         setAlert("Out of Time!");
@@ -117,18 +123,29 @@ export default function App() {
   }
 
   function handleSelect(selection: string) {
-    // console.log(selection);
+    if (lock) {
+      return;
+    }
+    // check for right selection and add points
     if (selection === quiz[progress].answer.name) {
       stopTime = new Date();
-      // calculate score - add bonus for quick time
+      // calculate points - add bonus for quick time
       let roundPoints = Math.floor(
         5000 + 5000 * (1 - (stopTime - startTime) / questionTimeout)
       );
       let updatedScore = score + roundPoints;
       setScore(updatedScore);
+      setCorrect(correct + 1);
       setAlert("Correct!");
       console.log("Correct!");
-      console.log("round:", roundPoints, "total:", updatedScore);
+      console.log(
+        "round:",
+        roundPoints,
+        "total:",
+        updatedScore,
+        "percent:",
+        (correct + 1) / quizLength
+      );
       nextQuestion();
     } else {
       setAlert("Wrong");
@@ -146,6 +163,8 @@ export default function App() {
     // turn off timer and show image
     setSilhouette(false);
     setTime(false);
+    // lock question so user cannot select again
+    setLock(true);
 
     // pause so user can see image, fade out, then show next
     if (progress < quizLength - 1) {
@@ -190,9 +209,9 @@ export default function App() {
             <h3>Instructions:</h3>
             <h4>
               Guess the hidden Pokémon as quickly as you can.
-              <br /> You only have 6 seconds for each round.
+              <br /> You only have 5 seconds for each round.
               <br /> The quicker you answer, the more points you will earn!
-              <br /> Every round is random, so keep trying!
+              <br /> Every game is random, so keep trying!
             </h4>
           </div>
         </div>
@@ -225,6 +244,9 @@ export default function App() {
           <h1 className="score">
             You scored <span>{score}</span>
           </h1>
+          <h2>
+            You answered {Math.floor((correct / quizLength) * 100)}% Correct
+          </h2>
           <br />
 
           <a
@@ -232,6 +254,7 @@ export default function App() {
             onClick={() => {
               setScore(0);
               setMode(0);
+              setCorrect(0);
             }}
           >
             Play Again

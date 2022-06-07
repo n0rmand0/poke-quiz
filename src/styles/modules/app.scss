@@ -22,6 +22,9 @@
   margin: 0 auto var(--small-spacing) auto;
   width: 66%;
   z-index: 9;
+  color: var(--yellow);
+  text-shadow: -0.1em 0.1em 0px var(--blue);
+
   @media (max-width: 670px) {
     font-size: 2em;
     margin-bottom: var(--base-spacing);
