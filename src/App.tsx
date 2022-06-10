@@ -4,22 +4,21 @@ import "./styles/global.scss";
 import Question from "./Question";
 import { pokedex } from "./pokedex";
 import { useEffect, useState } from "react";
-let startSlide: any, // timeout for starting gameplay
-  pauseSlide: any, // timeout for pausing gameplay
-  nextSlide: any, // timeout for go to next slide
+let startQuestionTimeout: any, // timeout for starting gameplay
+  pauseQuestionTimeout: any, // timeout for pausing gameplay
   startTime: any, // Date of start
   stopTime: any; // Date of finish
-let quizLength = 15;
-let questionTimeout = 6000;
+let quizLength = 15; // number of questions
+let questionTimeout = 6000; // time (ms) for each question
 
 export default function App() {
   const [mode, setMode] = useState(0); // 0=start menu // 1=play // 2=end game menu
   const [quiz, setQuiz] = useState<any[]>([]); // contains all the questions to build the quiz
-  const [progress, setProgress] = useState(0); // tracks current question/slide
+  const [progress, setProgress] = useState(0); // tracks current question
   const [visible, setVisible] = useState(true); // is question visible
   const [silhouette, setSilhouette] = useState(true); // is pokemon blacked out
-  const [time, setTime] = useState(true); // is timer ui visible
-  const [score, setScore] = useState(0); // trakcs score
+  const [timer, setTimer] = useState(true); // is timer ui visible
+  const [score, setScore] = useState(0); // tracks score
   const [correct, setCorrect] = useState(0); // tracks numer of correct answers
   const [alert, setAlert] = useState(""); // sets alert message
   const [lock, setLock] = useState(false); // locks slide so multiple selections cannot be made
@@ -33,11 +32,11 @@ export default function App() {
   useEffect(() => {
     if (mode === 1) {
       setAlert("");
-      setTime(true);
+      setTimer(true);
       setSilhouette(true);
       setLock(false);
       startTime = new Date();
-      startSlide = setTimeout(() => {
+      startQuestionTimeout = setTimeout(() => {
         setAlert("Out of Time!");
         nextQuestion();
       }, questionTimeout);
@@ -58,7 +57,6 @@ export default function App() {
         answerKey.push(key);
       } else {
         // not unique - start over
-        console.log("repeat answer");
         getRandomUniqueAnswers();
         return;
       }
@@ -81,8 +79,7 @@ export default function App() {
           if (answerKey.indexOf(key) < 0 && options.indexOf(key) < 0) {
             options.push(key);
           } else {
-            // not unique - start over
-            console.log("repeat options");
+            // not unique - try again
             getRandomUniqueOptions();
             return;
           }
@@ -107,7 +104,7 @@ export default function App() {
         }
         getRandomUniqueOptions();
       });
-      console.log(answerKey, questions);
+      // console.log(answerKey, questions);
       setQuiz(questions);
     }
   } // end buildQuiz
@@ -131,53 +128,45 @@ export default function App() {
       stopTime = new Date();
       // calculate points - add bonus for quick time
       let roundPoints = Math.floor(
-        5000 + 5000 * (1 - (stopTime - startTime) / questionTimeout)
+        500 + 500 * (1 - (stopTime - startTime) / questionTimeout)
       );
       let updatedScore = score + roundPoints;
       setScore(updatedScore);
       setCorrect(correct + 1);
       setAlert("Correct!");
       console.log("Correct!");
-      console.log(
-        "round:",
-        roundPoints,
-        "total:",
-        updatedScore,
-        "percent:",
-        (correct + 1) / quizLength
-      );
+      console.log("round:", roundPoints, "total:", updatedScore);
       nextQuestion();
     } else {
       setAlert("Wrong");
       console.log("Incorrect!");
-      console.log("round:", 0, "total:", score);
       nextQuestion();
     }
   }
 
   function nextQuestion() {
     // clear all timeouts
-    clearTimeout(startSlide);
-    clearTimeout(pauseSlide);
-    clearTimeout(nextSlide);
+    clearTimeout(startQuestionTimeout);
+    clearTimeout(pauseQuestionTimeout);
     // turn off timer and show image
     setSilhouette(false);
-    setTime(false);
+    setTimer(false);
     // lock question so user cannot select again
     setLock(true);
 
-    // pause so user can see image, fade out, then show next
+    // pause so user can see image, then show next
     if (progress < quizLength - 1) {
-      pauseSlide = setTimeout(() => {
+      pauseQuestionTimeout = setTimeout(() => {
         setVisible(false);
         setSilhouette(true);
         setProgress(progress + 1);
         setAlert("");
+        // delay before showing next
+        setTimeout(() => {
+          setVisible(true);
+          startTime = new Date();
+        }, 200);
       }, 2500);
-      nextSlide = setTimeout(() => {
-        setVisible(true);
-        startTime = new Date();
-      }, 2700);
     } else {
       // end game
       setTimeout(() => {
@@ -216,7 +205,7 @@ export default function App() {
           </div>
         </div>
       )}
-      {mode === 1 && visible && quiz[0] && (
+      {mode === 1 && quiz[0] && (
         <>
           <a
             className="back-button button--link"
@@ -230,13 +219,15 @@ export default function App() {
           </h2>
           {alert && <div className="alert">{alert}</div>}
           <div className="timer">
-            <div className={time ? "timer__progress" : ""}></div>
+            <div className={timer ? "timer__progress" : ""}></div>
           </div>
-          <Question
-            onSelect={(e: any) => handleSelect(e)}
-            data={quiz[progress]}
-            silhouette={silhouette}
-          />
+          {visible && (
+            <Question
+              onSelect={(e: any) => handleSelect(e)}
+              data={quiz[progress]}
+              silhouette={silhouette}
+            />
+          )}
         </>
       )}
       {mode === 2 && (

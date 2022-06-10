@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
 
 export default function Question(props: any) {
-  //   useEffect(() => {}, [props.data]);
-
   return (
     <div className="question">
       <div className="question__image">
         <div className="question__image__burst"></div>
         <div className="question__image__burst2"></div>
-
         <img
           className={props.silhouette ? "is-hidden" : ""}
           src={props.data.answer.image}
