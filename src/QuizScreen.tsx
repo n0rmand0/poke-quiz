@@ -3,7 +3,6 @@ export default function QuizScreen(props: any) {
     <>
       <a
         className="back-button button--link"
-        href=""
         onClick={() => props.setScreen(0)}
       >
         Back
