@@ -12,7 +12,7 @@ let startQuestionTimeout: any, // timeout for starting gameplay
   stopTime: any; // Date of finish
 
 let quizLength = 15; // number of questions
-let questionTimeout = 6000; // time (ms) for each question
+let questionTimeout = 5500; // time (ms) for each question
 
 export default function App() {
   const [startTime, setStartTime] = useState<Date>();
