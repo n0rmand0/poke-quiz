@@ -14,29 +14,33 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--base-font-family);
+  font-family: var(--secondary-font-family);
+
   line-height: 1.2;
   margin: 0 0 var(--small-spacing);
 }
 
 h1 {
-  font-size: 2.5em;
-}
-
-h2 {
+  font-family: var(--base-font-family);
   font-size: 2em;
 }
 
-h3 {
-  font-size: 1.75em;
-}
-
-h4 {
+h2 {
+  font-family: var(--base-font-family);
   font-size: 1.5em;
 }
 
+h3 {
+  font-family: var(--base-font-family);
+  font-size: 1.5em;
+}
+
+h4 {
+  font-size: 1.1em;
+}
+
 h5 {
-  font-size: 1.25em;
+  font-size: 1em;
 }
 
 h6 {

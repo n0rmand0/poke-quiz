@@ -1,18 +1,20 @@
 /** @jsxImportSource @emotion/react */
 import logo from "./logo.png";
 import "./styles/global.scss";
-import Question from "./Question";
+import MenuScreen from "./MenuScreen";
+import QuizScreen from "./QuizScreen";
+import EndScreen from "./EndScreen";
 import { pokedex } from "./pokedex";
 import { useEffect, useState } from "react";
 let startQuestionTimeout: any, // timeout for starting gameplay
   pauseQuestionTimeout: any, // timeout for pausing gameplay
   startTime: any, // Date of start
   stopTime: any; // Date of finish
-let quizLength = 15; // number of questions
+let quizLength = 3; // number of questions
 let questionTimeout = 6000; // time (ms) for each question
 
 export default function App() {
-  const [mode, setMode] = useState(0); // 0=start menu // 1=play // 2=end game menu
+  const [screen, setScreen] = useState(0); // 0=start menu // 1=play // 2=end game menu
   const [quiz, setQuiz] = useState<any[]>([]); // contains all the questions to build the quiz
   const [progress, setProgress] = useState(0); // tracks current question
   const [visible, setVisible] = useState(true); // is question visible
@@ -22,15 +24,39 @@ export default function App() {
   const [correct, setCorrect] = useState(0); // tracks numer of correct answers
   const [alert, setAlert] = useState(""); // sets alert message
   const [lock, setLock] = useState(false); // locks slide so multiple selections cannot be made
+  const [hiScores, setHiScores] = useState<any[]>([]); // track high scores
 
   // on load
   useEffect(() => {
     buildQuiz();
+    let storage = localStorage.getItem("hiScores");
+    if (storage) {
+      setHiScores(JSON.parse(storage));
+    }
   }, []);
+
+  // on screen change
+  useEffect(() => {
+    if (screen === 2) {
+      // add score to hi scores
+      let date = new Date();
+      let dateString =
+        date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear();
+      let updatedHighScores: any[] = hiScores;
+      let newScore = { score: score, date: dateString };
+      updatedHighScores.push(newScore);
+      // sort scores
+      updatedHighScores.sort((a, b) => b.score - a.score);
+      // only keep top 3 scores
+      updatedHighScores = updatedHighScores.slice(0, 3);
+      localStorage.setItem("hiScores", JSON.stringify(updatedHighScores));
+      setHiScores(updatedHighScores);
+    }
+  }, [screen]);
 
   // on progress change
   useEffect(() => {
-    if (mode === 1) {
+    if (screen === 1) {
       setAlert("");
       setTimer(true);
       setSilhouette(true);
@@ -41,14 +67,13 @@ export default function App() {
         nextQuestion();
       }, questionTimeout);
     }
-  }, [mode, progress]);
+  }, [progress]);
 
   //// building the quiz.  Each quiz is randomized from 800+ pokemon.
   function buildQuiz() {
     let answerKey: any[] = [];
     let questions: any[] = [];
     getRandomUniqueAnswers();
-
     // get random pokemon from pokedex. Add them to answer key.
     function getRandomUniqueAnswers() {
       let key = Math.floor(Math.random() * (pokedex.length - 1));
@@ -119,6 +144,7 @@ export default function App() {
     }
   }
 
+  //// handle selection of an answer ////
   function handleSelect(selection: string) {
     if (lock) {
       return;
@@ -144,6 +170,7 @@ export default function App() {
     }
   }
 
+  //// go to next question
   function nextQuestion() {
     // clear all timeouts
     clearTimeout(startQuestionTimeout);
@@ -153,7 +180,6 @@ export default function App() {
     setTimer(false);
     // lock question so user cannot select again
     setLock(true);
-
     // pause so user can see image, then show next
     if (progress < quizLength - 1) {
       pauseQuestionTimeout = setTimeout(() => {
@@ -170,87 +196,51 @@ export default function App() {
     } else {
       // end game
       setTimeout(() => {
-        setMode(2);
+        setScreen(2);
         buildQuiz();
         setProgress(0);
       }, 2000);
     }
   }
 
+  //// reset the game
+  function resetGame() {
+    setScore(0);
+    setScreen(0);
+    setCorrect(0);
+  }
+
   return (
     <div className="app">
-      <h1 className={mode === 1 ? "header header--small" : "header"}>
+      <h1 className={screen === 1 ? "header header--small" : "header"}>
         Who's that <img src={logo} alt="Pokémon" />
         <span>?</span>
       </h1>
 
-      {mode === 0 && (
-        <div>
-          <a
-            className="button button--large"
-            onClick={() => {
-              setMode(1);
-            }}
-          >
-            Start
-          </a>
-          <div className="instructions">
-            <h3>Instructions:</h3>
-            <h4>
-              Guess the hidden Pokémon as quickly as you can.
-              <br /> You only have 5 seconds for each round.
-              <br /> The quicker you answer, the more points you will earn!
-              <br /> Every game is random, so keep trying!
-            </h4>
-          </div>
-        </div>
+      {screen === 0 && <MenuScreen setScreen={(e) => setScreen(e)} />}
+      {screen === 1 && quiz[0] && (
+        <QuizScreen
+          setScreen={(e: number) => setScreen(e)}
+          progress={progress}
+          quizLength={quizLength}
+          timer={timer}
+          visible={visible}
+          onSelect={(e: string) => handleSelect(e)}
+          silhouette={silhouette}
+          alert={alert}
+          data={quiz[progress]}
+        />
       )}
-      {mode === 1 && quiz[0] && (
-        <>
-          <a
-            className="back-button button--link"
-            href=""
-            onClick={() => setMode(0)}
-          >
-            Back
-          </a>
-          <h2 className="progress">
-            {progress + 1}/{quizLength}
-          </h2>
-          {alert && <div className="alert">{alert}</div>}
-          <div className="timer">
-            <div className={timer ? "timer__progress" : ""}></div>
-          </div>
-          {visible && (
-            <Question
-              onSelect={(e: any) => handleSelect(e)}
-              data={quiz[progress]}
-              silhouette={silhouette}
-            />
-          )}
-        </>
-      )}
-      {mode === 2 && (
-        <div>
-          <h1 className="score">
-            You scored <span>{score}</span>
-          </h1>
-          <h2>
-            You answered {Math.floor((correct / quizLength) * 100)}% Correct
-          </h2>
-          <br />
-
-          <a
-            className="button button--large"
-            onClick={() => {
-              setScore(0);
-              setMode(0);
-              setCorrect(0);
-            }}
-          >
-            Play Again
-          </a>
-        </div>
+      {screen === 2 && (
+        <EndScreen
+          setScreen={(e: number) => setScreen(e)}
+          progress={progress}
+          quizLength={quizLength}
+          score={score}
+          hiScores={hiScores}
+          correct={correct}
+          resetGame={() => resetGame()}
+        />
       )}
     </div>
   );
