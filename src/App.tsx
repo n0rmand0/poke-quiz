@@ -11,7 +11,7 @@ let startQuestionTimeout: any, // timeout for starting gameplay
   // startTime: any, // Date of start
   stopTime: any; // Date of finish
 
-let quizLength = 3; // number of questions
+let quizLength = 15; // number of questions
 let questionTimeout = 6000; // time (ms) for each question
 
 export default function App() {
