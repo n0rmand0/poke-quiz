@@ -9,10 +9,10 @@ export default function EndScreen(props: any) {
               : "You Scored"}{" "}
             <span>{props.score}</span>
           </h1>
-          <h2 className="percentage">
+          <h3 className="percentage">
             You answered {Math.floor((props.correct / props.quizLength) * 100)}%
             Correct
-          </h2>
+          </h3>
           <br />
         </div>
         <div>

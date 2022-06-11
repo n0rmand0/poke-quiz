@@ -7,26 +7,23 @@ import EndScreen from "./EndScreen";
 import { pokedex } from "./pokedex";
 import { useEffect, useState } from "react";
 let startQuestionTimeout: any, // timeout for starting gameplay
-  pauseQuestionTimeout: any, // timeout for pausing gameplay
-  // startTime: any, // Date of start
-  stopTime: any; // Date of finish
-
-let quizLength = 15; // number of questions
+  pauseQuestionTimeout: any; // timeout for pausing gameplay
+let quizLength = 5; // number of questions
 let questionTimeout = 5500; // time (ms) for each question
 
 export default function App() {
-  const [startTime, setStartTime] = useState<Date>();
   const [screen, setScreen] = useState(0); // 0=start menu // 1=play // 2=end game menu
   const [quiz, setQuiz] = useState<any[]>([]); // contains all the questions to build the quiz
   const [progress, setProgress] = useState(0); // tracks current question
+  const [startTime, setStartTime] = useState<Date>(new Date()); // track when user starts a question
   const [visible, setVisible] = useState(true); // is question visible
   const [silhouette, setSilhouette] = useState(true); // is pokemon blacked out
   const [timer, setTimer] = useState(true); // is timer ui visible
   const [score, setScore] = useState(0); // tracks score
+  const [hiScores, setHiScores] = useState<any[]>([]); // track high scores
   const [correct, setCorrect] = useState(0); // tracks numer of correct answers
   const [alert, setAlert] = useState(""); // sets alert message
   const [lock, setLock] = useState(false); // locks slide so multiple selections cannot be made
-  const [hiScores, setHiScores] = useState<any[]>([]); // track high scores
 
   // on load
   useEffect(() => {
@@ -56,7 +53,7 @@ export default function App() {
     }
   }, [screen]);
 
-  // on progress change
+  // on progress/screen change
   useEffect(() => {
     if (screen === 1) {
       setAlert("");
@@ -161,10 +158,12 @@ export default function App() {
     }
     // check for right selection and add points
     if (selection === quiz[progress].answer.name) {
-      stopTime = new Date();
+      let stopTime: Date = new Date();
       // calculate points - add bonus for quick time
       let roundPoints = Math.floor(
-        500 + 500 * (1 - (stopTime - startTime) / questionTimeout)
+        500 +
+          500 *
+            (1 - (stopTime.valueOf() - startTime.valueOf()) / questionTimeout)
       );
       let updatedScore = score + roundPoints;
       setScore(updatedScore);
@@ -185,7 +184,7 @@ export default function App() {
     // clear all timeouts
     clearTimeout(startQuestionTimeout);
     clearTimeout(pauseQuestionTimeout);
-    // turn off timer and show image
+    // hide timer and show image
     setSilhouette(false);
     setTimer(false);
     // lock question so user cannot select again
@@ -204,7 +203,7 @@ export default function App() {
         }, 200);
       }, 2500);
     } else {
-      // end game
+      // end game if last question
       setTimeout(() => {
         setScreen(2);
         buildQuiz();
@@ -231,17 +230,16 @@ export default function App() {
           onSelect={(e: string) => handleSelect(e)}
           silhouette={silhouette}
           alert={alert}
-          data={quiz[progress]}
+          question={quiz[progress]}
         />
       )}
       {screen === 2 && (
         <EndScreen
           setScreen={(e: number) => setScreen(e)}
-          progress={progress}
+          correct={correct}
           quizLength={quizLength}
           score={score}
           hiScores={hiScores}
-          correct={correct}
         />
       )}
     </div>

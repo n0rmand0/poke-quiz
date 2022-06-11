@@ -22,17 +22,17 @@ export default function QuizScreen(props: any) {
             <div className="question__image__burst2"></div>
             <img
               className={props.silhouette ? "is-hidden" : ""}
-              src={props.data.answer.image}
+              src={props.question.answer.image}
               alt=""
             />
           </div>
 
           <ul className="question__buttons">
-            {props.data.options.map((o: any, key: number) => (
+            {props.question.options.map((o: any, key: number) => (
               <li>
                 <a
                   className={
-                    !props.silhouette && props.data.answer.name === o.name
+                    !props.silhouette && props.question.answer.name === o.name
                       ? "button button--reveal"
                       : "button"
                   }

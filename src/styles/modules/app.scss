@@ -19,7 +19,7 @@
 .header {
   position: relative;
   text-align: center;
-  margin: 0 auto var(--small-spacing) auto;
+  margin: 0 auto var(--base-spacing) auto;
   width: 66%;
   line-height: 1;
   z-index: 9;
@@ -28,7 +28,6 @@
 
   @media (max-width: 670px) {
     font-size: 1.6em;
-    margin-bottom: var(--base-spacing);
   }
   img {
     display: block;
@@ -140,7 +139,7 @@
 }
 
 .end-screen > div {
-  margin: auto;
+  margin: 0 auto;
 }
 
 .score {
@@ -161,7 +160,7 @@
   font-size: 1.25em;
 
   thead tr td {
-    border-bottom: solid 2px rgba(#fff, 0.2);
+    border-bottom: solid 2px rgba(#fff, 0.5);
     font-weight: bold;
   }
   td {
