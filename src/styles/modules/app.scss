@@ -93,9 +93,6 @@
   font-family: var(--secondary-font-family);
   margin-top: var(--base-spacing);
   font-size: 0.9em;
-  @media (max-width: 670px) {
-    font-size: 0.8em;
-  }
 }
 
 .back-button {

@@ -38,7 +38,6 @@ export default function QuizScreen(props: any) {
                   }
                   key={key}
                   onClick={() => {
-                    console.log("gains");
                     props.onSelect(o.name);
                   }}
                 >

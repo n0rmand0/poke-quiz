@@ -19,7 +19,7 @@ export default function EndScreen(props: any) {
           <table className="score-table">
             <thead>
               <tr>
-                <td>High Score</td>
+                <td>Top Scores</td>
                 <td>Date</td>
               </tr>
             </thead>
@@ -37,7 +37,7 @@ export default function EndScreen(props: any) {
       <a
         className="button button--large"
         onClick={() => {
-          props.resetGame();
+          props.setScreen(0);
         }}
       >
         Menu

@@ -4,7 +4,7 @@ export default function MenuScreen(props: any) {
       <a
         className="button button--large"
         onClick={() => {
-          props.setScreen(1);
+          props.startGame();
         }}
       >
         Start

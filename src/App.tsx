@@ -8,12 +8,14 @@ import { pokedex } from "./pokedex";
 import { useEffect, useState } from "react";
 let startQuestionTimeout: any, // timeout for starting gameplay
   pauseQuestionTimeout: any, // timeout for pausing gameplay
-  startTime: any, // Date of start
+  // startTime: any, // Date of start
   stopTime: any; // Date of finish
+
 let quizLength = 3; // number of questions
 let questionTimeout = 6000; // time (ms) for each question
 
 export default function App() {
+  const [startTime, setStartTime] = useState<Date>();
   const [screen, setScreen] = useState(0); // 0=start menu // 1=play // 2=end game menu
   const [quiz, setQuiz] = useState<any[]>([]); // contains all the questions to build the quiz
   const [progress, setProgress] = useState(0); // tracks current question
@@ -41,7 +43,7 @@ export default function App() {
       // add score to hi scores
       let date = new Date();
       let dateString =
-        date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear();
+        date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear();
       let updatedHighScores: any[] = hiScores;
       let newScore = { score: score, date: dateString };
       updatedHighScores.push(newScore);
@@ -61,13 +63,21 @@ export default function App() {
       setTimer(true);
       setSilhouette(true);
       setLock(false);
-      startTime = new Date();
+      setStartTime(new Date());
       startQuestionTimeout = setTimeout(() => {
         setAlert("Out of Time!");
         nextQuestion();
       }, questionTimeout);
     }
-  }, [progress]);
+  }, [progress, screen]);
+
+  //// start/reset the game
+  function startGame() {
+    setScore(0);
+    setCorrect(0);
+    setStartTime(new Date());
+    setScreen(1);
+  }
 
   //// building the quiz.  Each quiz is randomized from 800+ pokemon.
   function buildQuiz() {
@@ -190,7 +200,7 @@ export default function App() {
         // delay before showing next
         setTimeout(() => {
           setVisible(true);
-          startTime = new Date();
+          setStartTime(new Date());
         }, 200);
       }, 2500);
     } else {
@@ -203,13 +213,6 @@ export default function App() {
     }
   }
 
-  //// reset the game
-  function resetGame() {
-    setScore(0);
-    setScreen(0);
-    setCorrect(0);
-  }
-
   return (
     <div className="app">
       <h1 className={screen === 1 ? "header header--small" : "header"}>
@@ -217,7 +220,7 @@ export default function App() {
         <span>?</span>
       </h1>
 
-      {screen === 0 && <MenuScreen setScreen={(e) => setScreen(e)} />}
+      {screen === 0 && <MenuScreen startGame={() => startGame()} />}
       {screen === 1 && quiz[0] && (
         <QuizScreen
           setScreen={(e: number) => setScreen(e)}
@@ -239,7 +242,6 @@ export default function App() {
           score={score}
           hiScores={hiScores}
           correct={correct}
-          resetGame={() => resetGame()}
         />
       )}
     </div>
