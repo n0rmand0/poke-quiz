@@ -90,11 +90,16 @@
 }
 .instructions {
   font-family: var(--secondary-font-family);
-  margin-top: var(--base-spacing);
+  margin: var(--base-spacing) auto 0 auto;
   font-size: 1em;
+  max-width: 600px;
   // @media (max-width: 670px) {
   //   text-align: left;
   // }
+  p {
+    font-size: 1em;
+    font-weight: 800;
+  }
 }
 
 .back-button {
