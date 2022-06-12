@@ -1,21 +1,21 @@
 /** @jsxImportSource @emotion/react */
 import logo from "./logo.png";
 import "./styles/global.scss";
+import { pokedex } from "./pokedex";
+import { useEffect, useState } from "react";
 import MenuScreen from "./MenuScreen";
 import QuizScreen from "./QuizScreen";
 import EndScreen from "./EndScreen";
-import { pokedex } from "./pokedex";
-import { useEffect, useState } from "react";
 let startQuestionTimeout: any, // timeout for starting gameplay
-  pauseQuestionTimeout: any; // timeout for pausing gameplay
+  pauseQuestionTimeout: any, // timeout for pausing gameplay
+  startTime: Date; // track when user starts a question
 const quizLength = 10; // number of questions
-const questionTimeout = 5500; // time (ms) for each question
+const questionTime = 5500; // time (ms) for each question
 
 export default function App() {
   const [screen, setScreen] = useState(0); // 0=start menu // 1=play // 2=end game menu
   const [quiz, setQuiz] = useState<any[]>([]); // contains all the questions to build the quiz
   const [progress, setProgress] = useState(0); // tracks current question
-  const [startTime, setStartTime] = useState<Date>(new Date()); // track when user starts a question
   const [visible, setVisible] = useState(true); // is question visible
   const [silhouette, setSilhouette] = useState(true); // is pokemon blacked out
   const [timer, setTimer] = useState(true); // is timer ui visible
@@ -59,11 +59,11 @@ export default function App() {
       setTimer(true);
       setSilhouette(true);
       setLock(false);
-      setStartTime(new Date());
+      startTime = new Date();
       startQuestionTimeout = setTimeout(() => {
         setAlert("Out of Time!");
         nextQuestion();
-      }, questionTimeout);
+      }, questionTime);
     }
     if (screen === 0) {
       clearTimeout(startQuestionTimeout);
@@ -78,7 +78,6 @@ export default function App() {
     setCorrect(0);
     setProgress(0);
     setScreen(1);
-    setStartTime(new Date());
   }
 
   //// building the quiz.  Each quiz is randomized from 800+ pokemon.
@@ -167,8 +166,7 @@ export default function App() {
       // calculate points - add bonus for quick time
       let roundPoints = Math.floor(
         500 +
-          500 *
-            (1 - (stopTime.valueOf() - startTime.valueOf()) / questionTimeout)
+          500 * (1 - (stopTime.valueOf() - startTime.valueOf()) / questionTime)
       );
       let updatedScore = score + roundPoints;
       setScore(updatedScore);
@@ -204,7 +202,7 @@ export default function App() {
         // delay before showing next
         setTimeout(() => {
           setVisible(true);
-          setStartTime(new Date());
+          startTime = new Date();
         }, 200);
       }, 2500);
     } else {
