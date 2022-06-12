@@ -24,7 +24,7 @@ export default function EndScreen(props: any) {
               </tr>
             </thead>
             <tbody>
-              {props.hiScores.map((h, key) => (
+              {props.hiScores.map((h: any, key: number) => (
                 <tr key={key}>
                   <td>{h.score}</td>
                   <td>{h.date}</td>

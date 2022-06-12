@@ -8,7 +8,7 @@ import { pokedex } from "./pokedex";
 import { useEffect, useState } from "react";
 let startQuestionTimeout: any, // timeout for starting gameplay
   pauseQuestionTimeout: any; // timeout for pausing gameplay
-const quizLength = 5; // number of questions
+const quizLength = 10; // number of questions
 const questionTimeout = 5500; // time (ms) for each question
 
 export default function App() {
@@ -27,7 +27,6 @@ export default function App() {
 
   // on load
   useEffect(() => {
-    buildQuiz();
     let storage = localStorage.getItem("hiScores");
     if (storage) {
       setHiScores(JSON.parse(storage));
@@ -66,6 +65,10 @@ export default function App() {
         nextQuestion();
       }, questionTimeout);
     }
+    if (screen === 0) {
+      clearTimeout(startQuestionTimeout);
+      clearTimeout(pauseQuestionTimeout);
+    }
   }, [progress, screen]);
 
   //// start/reset the game
@@ -73,14 +76,13 @@ export default function App() {
     buildQuiz();
     setScore(0);
     setCorrect(0);
-    setStartTime(new Date());
     setProgress(0);
     setScreen(1);
+    setStartTime(new Date());
   }
 
   //// building the quiz.  Each quiz is randomized from 800+ pokemon.
   function buildQuiz() {
-    console.log("building...");
     let answerKey: any[] = [];
     let questions: any[] = [];
     getRandomUniqueAnswers();

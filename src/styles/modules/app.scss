@@ -92,9 +92,9 @@
   font-family: var(--secondary-font-family);
   margin-top: var(--base-spacing);
   font-size: 1em;
-  @media (max-width: 670px) {
-    font-size: 0.9em;
-  }
+  // @media (max-width: 670px) {
+  //   text-align: left;
+  // }
 }
 
 .back-button {
@@ -108,8 +108,7 @@
   @media (max-width: 670px) {
     top: 3rem;
     left: var(--small-spacing);
-
-    font-size: 0.8em;
+    // font-size: 0.9em;
   }
 }
 

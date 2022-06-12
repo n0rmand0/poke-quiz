@@ -28,14 +28,13 @@ export default function QuizScreen(props: any) {
 
           <ul className="question__buttons">
             {props.question.options.map((o: any, key: number) => (
-              <li>
+              <li key={key}>
                 <a
                   className={
                     !props.silhouette && props.question.answer.name === o.name
                       ? "button button--reveal"
                       : "button"
                   }
-                  key={key}
                   onClick={() => {
                     props.onSelect(o.name);
                   }}
