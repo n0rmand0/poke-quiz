@@ -9,7 +9,7 @@ import EndScreen from "./EndScreen";
 let startQuestionTimeout: any, // timeout for starting gameplay
   pauseQuestionTimeout: any, // timeout for pausing gameplay
   startTime: Date; // track when user starts a question
-const quizLength = 10; // number of questions
+const quizLength = 3; // number of questions
 const questionTime = 5500; // time (ms) for each question
 
 export default function App() {
@@ -33,7 +33,7 @@ export default function App() {
     }
   }, []);
 
-  // on screen change
+  // on progress/screen change
   useEffect(() => {
     if (screen === 2) {
       // add score to hi scores
@@ -50,10 +50,6 @@ export default function App() {
       localStorage.setItem("hiScores", JSON.stringify(updatedHighScores));
       setHiScores(updatedHighScores);
     }
-  }, [screen]);
-
-  // on progress/screen change
-  useEffect(() => {
     if (screen === 1) {
       setAlert("");
       setTimer(true);
