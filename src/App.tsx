@@ -9,7 +9,7 @@ import EndScreen from "./EndScreen";
 let startQuestionTimeout: any, // timeout for starting gameplay
   pauseQuestionTimeout: any, // timeout for pausing gameplay
   startTime: Date; // track when user starts a question
-const quizLength = 3; // number of questions
+const quizLength = 10; // number of questions
 const questionTime = 5500; // time (ms) for each question
 
 export default function App() {
