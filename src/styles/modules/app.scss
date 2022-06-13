@@ -203,6 +203,8 @@
 .question__image {
   position: relative;
   width: 50%;
+  margin: auto;
+  height: 50%;
   @media (max-width: 670px) {
     position: absolute;
     top: 15%;
@@ -231,17 +233,19 @@
 }
 
 .question__image img {
+  display: block;
+  margin: auto;
   max-height: 90%;
   width: auto;
   animation: floating 4s ease-in-out infinite;
+  // transition: all 0.3s;
   filter: brightness(1);
-  // opacity: 1;
-  transition: all 0.3s;
+  opacity: 1;
 }
 
 .question__image img.is-hidden {
   filter: brightness(0);
-  // opacity: 0.9;
+  opacity: 0.8;
 }
 
 .question__buttons {

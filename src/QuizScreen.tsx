@@ -14,38 +14,39 @@ export default function QuizScreen(props: any) {
       <div className="timer">
         <div className={props.timer ? "timer__progress" : ""}></div>
       </div>
-      {props.visible && (
-        <div className="question">
-          <div className="question__image">
-            <div className="question__image__burst"></div>
-            <div className="question__image__burst2"></div>
+
+      <div className="question">
+        <div className="question__image">
+          <div className="question__image__burst"></div>
+          <div className="question__image__burst2"></div>
+
+          {props.visible && (
             <img
               className={props.silhouette ? "is-hidden" : ""}
               src={props.question.answer.image}
-              alt=""
+              alt={props.question.answer.name}
             />
-          </div>
-
-          <ul className="question__buttons">
-            {props.question.options.map((o: any, key: number) => (
-              <li key={key}>
-                <a
-                  className={
-                    !props.silhouette && props.question.answer.name === o.name
-                      ? "button button--reveal"
-                      : "button"
-                  }
-                  onClick={() => {
-                    props.onSelect(o.name);
-                  }}
-                >
-                  {o.name}
-                </a>
-              </li>
-            ))}
-          </ul>
+          )}
         </div>
-      )}
+        <ul className="question__buttons">
+          {props.question.options.map((o: any, key: number) => (
+            <li key={key}>
+              <a
+                className={
+                  !props.silhouette && props.question.answer.name === o.name
+                    ? "button button--reveal"
+                    : "button"
+                }
+                onClick={() => {
+                  props.onSelect(o.name);
+                }}
+              >
+                {o.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </>
   );
 }
