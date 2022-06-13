@@ -236,13 +236,13 @@
   width: auto;
   animation: floating 4s ease-in-out infinite;
   filter: brightness(1);
-  opacity: 1;
+  // opacity: 1;
   transition: all 0.3s;
 }
 
 .question__image img.is-hidden {
   filter: brightness(0);
-  opacity: 0.9;
+  // opacity: 0.9;
 }
 
 .question__buttons {
