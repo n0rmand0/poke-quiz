@@ -2,7 +2,7 @@
   display: flex;
   flex-flow: column;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   text-align: center;
   margin: 0;
   padding: var(--base-spacing);
@@ -203,6 +203,7 @@
 .question__image {
   position: relative;
   width: 50%;
+  height: auto;
   @media (max-width: 670px) {
     position: absolute;
     top: 15%;
@@ -235,11 +236,13 @@
   width: auto;
   animation: floating 4s ease-in-out infinite;
   filter: brightness(1);
+  opacity: 1;
   transition: all 0.3s;
 }
 
 .question__image img.is-hidden {
   filter: brightness(0);
+  opacity: 0.9;
 }
 
 .question__buttons {
@@ -252,6 +255,7 @@
     width: 100%;
     padding-bottom: 0;
   }
+
   ul {
     display: block;
     margin: 0;
@@ -268,6 +272,10 @@
     @media (max-width: 670px) {
       font-size: 1em;
       margin-bottom: 0.5rem;
+    }
+    @media (max-height: 600px) {
+      font-size: 0.8em !important;
+      padding: 0.25em;
     }
   }
   li:last-child a {
