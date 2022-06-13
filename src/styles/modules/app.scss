@@ -203,7 +203,6 @@
 .question__image {
   position: relative;
   width: 50%;
-  height: auto;
   @media (max-width: 670px) {
     position: absolute;
     top: 15%;
@@ -232,7 +231,7 @@
 }
 
 .question__image img {
-  height: 90%;
+  max-height: 90%;
   width: auto;
   animation: floating 4s ease-in-out infinite;
   filter: brightness(1);
