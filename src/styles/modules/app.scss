@@ -240,6 +240,8 @@
   display: block;
   margin: auto;
   max-height: 90%;
+  min-width: 50%;
+  background-color: #53abb9;
   width: auto;
   animation: floating 4s ease-in-out infinite;
   // transition: all 0.3s;
